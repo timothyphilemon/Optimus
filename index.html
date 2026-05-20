@@ -733,12 +733,31 @@
   function submitForm() {
     const name = document.getElementById('fname').value.trim();
     const email = document.getElementById('femail').value.trim();
+    const message = document.getElementById('fmessage').value.trim();
     if (!name || !email) {
       alert('Please enter your name and email before submitting.');
       return;
     }
-    document.getElementById('modalForm').style.display = 'none';
-    document.getElementById('modalSuccess').style.display = 'block';
+
+    fetch('https://formspree.io/f/xjgzyryo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        message: message,
+        plan: document.getElementById('modalTitle').textContent
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        document.getElementById('modalForm').style.display = 'none';
+        document.getElementById('modalSuccess').style.display = 'block';
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    })
+    .catch(() => alert('Something went wrong. Please try again.'));
   }
 
   document.addEventListener('keydown', function(e) {
